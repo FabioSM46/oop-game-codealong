@@ -17,7 +17,7 @@ class Player {
     this.DOMElement.style.width = this.width + "vw";
     this.DOMElement.style.height = this.height + "vh";
     this.DOMElement.style.bottom = this.positionY;
-    this.DOMElement.style.left = this.positionX + "vw";
+    this.DOMElement.style.left = `calc(${this.positionX}vw - 5vw)`; //calc to start centered
 
     //append the DOM to the parent element
     const parentElm = document.getElementById("board");
@@ -53,7 +53,7 @@ class Obstacle {
     this.DOMElement.className = "obstacle";
     this.DOMElement.style.width = this.width + "vw";
     this.DOMElement.style.height = this.height + "vh";
-    this.DOMElement.style.bottom = this.positionY;
+    this.DOMElement.style.bottom = this.positionY + "vh";
     this.DOMElement.style.left = this.positionX + "vw";
 
     //append the DOM to the parent element
@@ -80,9 +80,19 @@ document.addEventListener("keydown", (event) => {
 
 //interval that move the obstacle
 const intervalIDmoveDown = setInterval(() => {
-  obstaclesArr.forEach((obstacleInstance)=>{
-    obstacleInstance.moveDown()
-  })
+  obstaclesArr.forEach((obstacleInstance) => {
+    obstacleInstance.moveDown();
+
+    if (
+      obstacleInstance.positionX < player.positionX + player.width &&
+      obstacleInstance.positionX + obstacleInstance.width > player.positionX &&
+      obstacleInstance.positionY < player.positionY + player.height &&
+      obstacleInstance.height + obstacleInstance.positionY > player.positionY
+    ) {
+      console.log("game over my fren");
+      location.href = './gameover.html'
+    }
+  });
 }, 50);
 
 const intervalIDnewObstacle = setInterval(() => {
@@ -91,4 +101,4 @@ obstacles into the array so
 we have multiple obstacle objects */
   const newObstacle = new Obstacle();
   obstaclesArr.push(newObstacle);
-}, 1000);
+}, 3000);
